@@ -1,29 +1,39 @@
+from src.modules.rules.board import Board as Bd
+from src.modules.player.player import User, Random
+from src.modules.view.view import output_console as oc
+
 def set_usr():
     return
+
 
 def set_difficulty():
     return
 
-def create_board():
-    return
 
-def start_game():
-    return
+def start_game(b_player, w_player):
+    board = Bd()
+    black = b_player
+    white = w_player
+    while True:
+        now_legal, alt_legal, turn = board.get_candidate()
 
-def judge_able_put_disc():
-    return
+        if turn is None:
+            # ゲーム終了
+            break
 
-def put_disc():
-    return
+        oc(board)
 
-def turn_over_disc():
-    return
+        if now_legal == 0:
+            # TODO パスになる旨記載
+            now_legal = alt_legal
 
-def get_turn():
-    return
+        if turn == 0:
+            board.put_disc(black.judge(board))
+        else:
+            board.put_disc(white.judge(board))
+    
+    print(board.disc_count(agg="bw"))
 
-def judge_winner():
-    return
 
-def end_game():
-    return
+if __name__ == '__main__':
+    start_game(User, Random)

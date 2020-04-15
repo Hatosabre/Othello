@@ -29,3 +29,4 @@ def output_console(board):
 
     print(res)
 
+

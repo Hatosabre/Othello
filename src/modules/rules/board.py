@@ -37,7 +37,8 @@ class Board:
             return
 
     class InvalidPutDiscException(ValueError):
-        pass
+        print("既に駒が置かれています")
+
 
     def __init__(self, b_disc=cst.DEFAULT_FIRST_BLACK_PLACE,
                        w_disc=cst.DEFAULT_FIRST_WHITE_PLACE,
@@ -231,6 +232,8 @@ class Board:
             self.b_disc ^= rev ^ place
             self.w_disc ^= rev
 
+        self.turn ^= 1
+
         return
 
     def __legal(self):
@@ -314,7 +317,12 @@ class Board:
 
         return legal
 
-    def get_candidate(self):
+    def turn_pass(self):
+        self.turn ^= 1
+        self.put.append(0)
+        self.rev.append(0)
+
+    def get_candidate(self, is_pass=True):
         """候補値を取得
         
         Returns:
@@ -323,10 +331,8 @@ class Board:
         """
         legal = self.__legal()
 
-        if legal == 0:
-            self.put.append(0)
-            self.rev.append(0)
-            self.turn ^= 1
+        if legal == 0 and is_pass:
+            self.turn_pass()
 
             legal = self.__legal()
 
@@ -335,7 +341,10 @@ class Board:
 
             return 0, legal, self.turn
 
-        return legal, False, self.turn
+        elif legal != 0 and is_pass:
+            return legal, False, self.turn
+        else:
+            return legal
 
     def backward(self):
         """ターンを戻す
